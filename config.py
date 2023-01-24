@@ -13,7 +13,7 @@ WEBCAM_ON = False
 WEBCAM_SRC = 1
 
 IPCAM_ON = True
-IPCAM_SRC = "rtsp://admin:dogduck1@192.168.1.204:554/12"
+IPCAM_SRC = "rtsp://admin:admin@192.168.1.204:554/12"  # Set per IP Cam Docs and config
 
 IM_PREFIX = "track-"   # Prefix for image files
 IM_DIR = "./media/images"  # directory for saving images (auto created)
