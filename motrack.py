@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "0.97"
+PROG_VERSION = "0.98"
 
 import logging
 # Setup Logging
