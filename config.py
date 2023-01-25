@@ -12,8 +12,10 @@ SHOW_SETTINGS = True   # Display settings on launch
 WEBCAM_ON = False
 WEBCAM_SRC = 1
 
-IPCAM_ON = True
-IPCAM_SRC = "rtsp://user:passwd@192.168.1.204:554/12"  # Set per IP Cam Docs and config
+IPCAM_ON = False
+IPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
+
+# NOTE: To Scan for Pi Lib or legacy CAM Set WEBCAM_ON and IPCAM_ON to False
 
 IM_PREFIX = "track-"   # Prefix for image files
 IM_DIR = "./media/images"  # directory for saving images (auto created)
