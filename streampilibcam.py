@@ -57,11 +57,11 @@ class PiLibCamStream:
                 if self.thread is not None:
                     self.thread.join()
                 return
+            time.sleep(0.01)  # short delay
+            self.frame = self.picam2.capture_array()        
 
     def read(self):
         '''return the frame array data'''
-        time.sleep(0.01)
-        self.frame = self.picam2.capture_array()
         return self.frame
 
     def stop(self):
