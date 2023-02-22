@@ -3,7 +3,7 @@
 #======================================
 # Logging Settings
 #======================================
-LOGGING_ON = False     # Show individual track xy points
+LOGGING_ON = True     # Show individual track xy points
 SHOW_SETTINGS = True   # Display settings on launch
 
 #======================================
@@ -28,7 +28,7 @@ IM_FRAMERATE = 30      # Legacy Picamera Framerate
 #======================================
 # Motion Tracking Settings
 #======================================
-TRACK_MIN_AREA = 200    # Minimum area of contours to track
+TRACK_MIN_AREA = 500    # Minimum area of contours to track
 TRACK_TRIG_AUTO = True  # True Auto Calculates TRIG_LEN and INTERVAL_LEN.
 TRACK_TRIG_LEN = 150    # Number of pixels to end tracking
 TRACK_INTERVAL_LEN = 50 # Max allowed px distance from previous
