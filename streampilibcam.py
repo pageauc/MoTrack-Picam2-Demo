@@ -9,7 +9,7 @@ class PiLibCamStream:
 
     '''
     Create a picamera2 libcamera in memory image stream that
-    runs in a Tread (Bullseye or later)
+    runs in a Thread (Bullseye or later)
     returns image array when read() called
 
     sample implementation for your python script.
