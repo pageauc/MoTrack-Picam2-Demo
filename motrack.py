@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.0"
+PROG_VERSION = "1.1"
 
 import logging
 # Setup Logging
@@ -233,7 +233,11 @@ if __name__ == "__main__":
     start_track = True
     track_hist = []
     image1 = vs.read()
-    grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+    try:
+        grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+    except cv2.error:
+        logging.error('Problem Connecting to %s. Review Log Messages and Correct', mycam)
+        sys.exit(1)
     im_height, im_width, _ = image1.shape
     if TRACK_TRIG_AUTO:
         # Auto calculate variables below
