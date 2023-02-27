@@ -6,14 +6,14 @@
 LOGGING_ON = True     # Show individual track xy points
 SHOW_SETTINGS = True   # Display settings on launch
 
+
 #======================================
 # Camera and Image Settings
 #======================================
-WEBCAM_ON = False
-WEBCAM_SRC = 1
-
-IPCAM_ON = False
-IPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
+CAMERA = "usbcam"    # valid values usbcam, rtspcam, pilibcam, pilegcam
+ 
+USBCAM_SRC = 1
+RTSPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
 
 # NOTE: To Scan for Pi Lib or legacy CAM Set WEBCAM_ON and IPCAM_ON to False
 

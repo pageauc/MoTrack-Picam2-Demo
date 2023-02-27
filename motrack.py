@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "0.98"
+PROG_VERSION = "1.0"
 
 import logging
 # Setup Logging
@@ -15,9 +15,11 @@ import datetime
 import math
 import cv2
 import subprocess
-import logging
 
-CONFIG_FILENAME = "config.py"
+# list of valid camera sources
+CAMLIST = ('usbcam', 'rtspcam', 'pilibcam', 'pilegcam')
+CONFIG_FILENAME = "config.py"  # settings file to import
+
 if os.path.exists(CONFIG_FILENAME):
     # Read Configuration variables from config.py file
     try:
@@ -34,6 +36,19 @@ else:
 PROG_NAME = os.path.basename(__file__)
 
 # ------------------------------------------------------------------------------
+def validate_cam(cam, camlist):
+    camlow = cam.lower()
+    if not camlow in camlist:
+        logging.error('%s Not a Valid Camera Value', cam)
+        logging.info('Valid Values are %s', ' '.join(camlist))
+        logging.info('Edit config.py CAMERA variable.')
+        sys.exit(1)
+    else:
+        logging.info('Connecting to camera %s', camlow)
+    return camlow
+
+
+# ------------------------------------------------------------------------------
 def show_settings(filename):
     '''
     Display program configuration variable settings
@@ -43,50 +58,6 @@ def show_settings(filename):
         for line in f:
             print(line.decode().strip())
     print("")
-
-
-# ------------------------------------------------------------------------------
-def check_picam():
-    '''
-    Test for legacy picamera setup then libcamera picamera2 setup and
-    return results or None.
-    '''
-    # Check for legacy pi camera module installed and enabled
-    logging.info("Check for Legacy Pi Camera Module with command - vcgencmd get_camera")
-    camResult = subprocess.check_output("vcgencmd get_camera", shell=True)
-    camResult = camResult.decode("utf-8")
-    camResult = camResult.replace("\n", "")
-    params = camResult.split()
-    for x in range(0,2):
-        if params[x].find("0") >= 0:
-            logging.warning("Detected Problem with Pi Camera Module per %s", params[x])
-            logging.info("Check Cables and/or Legacy Camera using sudo raspi-config")
-        else:
-            logging.info("Success: Legacy Pi Camera is %s", camResult)
-            return "pilegacy"
-
-    # Check for Libcamera pi camera module installed and enabled
-    logging.info("Check if picamera2 libcamera Exists ...")
-    if os.path.exists("/usr/bin/libcamera-still"):
-        if os.path.exists("im_test.jpg"):
-            os.remove("im_test.jpg")
-        p = subprocess.run([ '/usr/bin/libcamera-still', '-v', '0', '-n', 'off', '-o', 'im_test.jpg' ])
-        err = p.returncode
-        if err != 0:
-            logging.error("Problem testing Pi Lib Camera Errorcode = ", err)
-            return None
-        logging.info("Check Lib Camera output with test image")
-        if os.path.exists("im_test.jpg"):
-            os.remove("im_test.jpg")
-            logging.info("Success: Found Pi libcamera")
-            return "pilibcam"
-        else:
-            logging.error("Problem with Pi Lib Camera Configuration")
-            return None
-    else:
-        logging.error("picamera2 libcamera Install Not Found.")
-        logging.info("Verify libcamera is installed and working")
-        return None
 
 
 # ------------------------------------------------------------------------------
@@ -170,23 +141,80 @@ def track_motion_distance(xy1, xy2):
     trackLen = int(abs(math.hypot(x2 - x1, y2 - y1)))
     return trackLen
 
+def is_pi_legacy_cam():
+    logging.info("Check for Legacy Pi Camera Module with command - vcgencmd get_camera")
+    camResult = subprocess.check_output("vcgencmd get_camera", shell=True)
+    camResult = camResult.decode("utf-8")
+    camResult = camResult.replace("\n", "")
+    params = camResult.split()
+    if params[0].find("=1") >= 1 and params[1].find("=1") >= 1:
+        logging.info("Pi Camera Module Found %s", camResult)
+        return True
+    else:
+        logging.error("Problem Finding Pi Legacy Camera %s", camResult)
+        logging.error('Check if Legacy pi Camera is Enabled and Camera is working.')
+        return False
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
+
     if SHOW_SETTINGS:
-        show_settings(config_filename)
+        show_settings(CONFIG_FILENAME)
 
     if not os.path.exists(IM_DIR):  # Check if image directory exists
         os.makedirs(IM_DIR)  # Create directory if Not Found
 
     logging.info("%s ver %s written by Claude Pageau", PROG_NAME, PROG_VERSION)
-    if WEBCAM_ON or IPCAM_ON:
-        if IPCAM_ON:
-            cam_src = IPCAM_SRC
-            cam = "IPCamera " + cam_src
+    mycam = validate_cam(CAMERA, CAMLIST)
+
+    if mycam == 'pilibcam':
+        if not is_pi_legacy_cam():
+            if not os.path.exists('/usr/bin/libcamera-still'):
+                logging.error('libcamera not Installed')
+                logging.info('Edit config.py and Change CAMERA variable as Required.')
+                os.exit(1)
+            if not os.path.exists('streampilibcam.py'):
+                logging.error("streampilibcam.py File Not Found.")
+                sys.exit(1)
+            try:
+                from streampilibcam import PiLibCamStream
+            except ImportError:
+                logging.error("Failed Import of streampilibcam.py")
+                sys.exit(1)
+            cam = mycam
+            vs = PiLibCamStream(size=IM_SIZE,
+                                im_vflip=IM_VFLIP,
+                                im_hflip=IM_HFLIP).start()
         else:
-            cam_src = WEBCAM_SRC
-            cam = "WEBCamera " + str(cam_src)
+            logging.error('Looks like Pi Legacy Camera is Enabled')
+            logging.info('Edit config.py and Change CAMERA variable as Required.')
+            logging.info('or Disable Legacy Pi Camera using sudo raspi-config')            
+            sys.exit(1)
+        
+    elif mycam == 'pilegcam':
+        # Check if for Pi Legacy pi Camera
+        if not is_pi_legacy_cam(): 
+            sys.exit(1)
+    
+        if not os.path.exists('streampilegacycam.py'):
+            logging.error("pilegacycamsteam.py File Not Found.")
+            sys.exit(1)
+        try:  # Add this check in case running on non RPI platform using usb camera
+            from streampilegacycam import PiLegacyCamStream
+        except ImportError:
+            logging.error("Could Not Import streampilegacycam.py")
+            sys.exit(1)
+        cam = mycam
+        vs = PiLegacyCamStream(size=IM_SIZE,
+                                   hflip=IM_HFLIP,
+                                   vflip=IM_VFLIP).start()
+    elif mycam == 'usbcam' or mycam == 'rtspcam':
+        if mycam == 'rtspcam':
+            cam_src = RTSPCAM_SRC
+            cam = "RTSPCamera " + cam_src
+        elif mycam == 'usbcam':
+            cam_src = USBCAM_SRC
+            cam = "USBCamera " + str(cam_src)
 
         logging.info("Start Stream Thread: %s", cam)
         if not os.path.exists('streamwebcam.py'):
@@ -198,44 +226,9 @@ if __name__ == "__main__":
             logging.error("Import Failed for streamwebcam.py")
             sys.exit(1)
         vs = WebcamStream(src=cam_src, size=IM_SIZE).start()
-        time.sleep(3) # Wait for stream to settle down
 
-    else:
-        cam = check_picam()   # Detect if picamera or picamera2 configured
-        if cam is not None:
-            logging.info("Start Stream Thread: %s", cam)
-            if cam == "pilibcam":
-                if not os.path.exists('streampilibcam.py'):
-                    logging.error("streampilibcam.py File Not Found.")
-                    sys.exit(1)
-                try:
-                    from streampilibcam import PiLibCamStream
-                except ImportError:
-                    logging.error("Failed Import of streampilibcam.py")
-                    sys.exit(1)                    
-                vs = PiLibCamStream(size=IM_SIZE,
-                                    im_vflip=IM_VFLIP,
-                                    im_hflip=IM_HFLIP).start()
-
-            elif cam == "pilegacy":
-                if not os.path.exists('streampilegacycam.py'):
-                    logging.error("pilegacycamsteam.py File Not Found.")
-                    sys.exit(1)
-                try:  # Add this check in case running on non RPI platform using web cam
-                    from streampilegacycam import PiLegacyCamStream
-                except ImportError:
-                    logging.error("Could Not Import streampilegacycam.py")
-                    sys.exit(1)
-                vs = PiLegacyCamStream(size=IM_SIZE,
-                                       hflip=IM_HFLIP,
-                                       vflip=IM_VFLIP).start()
-            logging.info("Wait ...")
-            time.sleep(5)  # Allow Camera to warm up
-        else:
-            logging.warning("Could not Find a PI Camera and/or Configuration")
-            logging.warning("Investigate Problem.")
-            sys.exit(1)
-
+    logging.info("Wait ...")
+    time.sleep(3)  # Allow Camera to warm up
     # initialize first gray image
     start_track = True
     track_hist = []
