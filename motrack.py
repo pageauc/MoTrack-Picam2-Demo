@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.2"
+PROG_VERSION = "1.4"
 
 import logging
 # Setup Logging
@@ -86,7 +86,7 @@ def get_image_name(path, prefix):
 # ------------------------------------------------------------------------------
 def timer_end(timer_start, timer_sec):
     '''
-    Check if timelapse timer has expired
+    Check if timer has expired
     Return updated start time status of expired timer True or False
     '''
     rightNow = datetime.datetime.now()
@@ -104,7 +104,8 @@ def get_motion_track_point(grayimage1, grayimage2):
     check for motion and return center point
     of motion for largest contour.
     '''
-    movement_center = ()
+    movement_center = None
+    movement_size = 0
     # Get differences between the two greyed images
     differenceimage = cv2.absdiff(grayimage1, grayimage2)
     # Blur difference image to enhance motion vectors
@@ -127,10 +128,12 @@ def get_motion_track_point(grayimage1, grayimage2):
     if contours:
         c = max(contours, key = cv2.contourArea)
         (x, y, w, h) = cv2.boundingRect(c)
-        if w * h <= TRACK_MIN_AREA:
-            return None
+        movement_size = w * h
+        if movement_size <= TRACK_MIN_AREA:
+            return None, movement_size
         movement_center = (int(x + w / 2), int(y + h / 2))
-    return movement_center
+        movement_size = w * h
+    return movement_center, movement_size
 
 
 # ------------------------------------------------------------------------------
@@ -275,20 +278,35 @@ if __name__ == "__main__":
                 grayimage2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
             except:
                 continue
-            motion_xy = get_motion_track_point(grayimage1, grayimage2)
+
+            motion_xy, motion_size = get_motion_track_point(grayimage1, grayimage2)
             grayimage1 = grayimage2  # update for next track
+
+            # No motion try again
+            if motion_xy is None:
+                continue
+
+            # Check if timer expired and if so restart track and try again
+            if not start_track and timer_end(track_timer_start, TRACK_TIMEOUT_SEC):
+                if LOGGING_ON:
+                    logging.info("IIMER: GT %i TRACK_TIMEOUT_SEC",
+                                 TRACK_TIMEOUT_SEC)
+                start_track = True
+                continue
+            # If this is first track motion initialize tracking variables
             if motion_xy and start_track:
                 track_timer_start = datetime.datetime.now()
                 mpoint_start = motion_xy
                 prev_mpoint = motion_xy
                 max_radius = TRACK_INTERVAL_LEN
                 if LOGGING_ON:
-                    logging.info("(%i, %i) Track Start: New",
-                                 mpoint_start[0], mpoint_start[1])
+                    logging.info("START: (%i, %i) %i sqpx",
+                                 mpoint_start[0], mpoint_start[1], motion_size)
                 if TRACK_HIST_ON: # Reset Tracking History
                     track_hist = [mpoint_start]
                 start_track = False
-            elif motion_xy:
+            # Start tracking motion
+            else:
                 mpoint2 = motion_xy
                 track_length = track_motion_distance(mpoint_start, mpoint2)
                 if TRACK_HIST_ON:
@@ -305,17 +323,17 @@ if __name__ == "__main__":
                     # ignore out of range points and reset start point
                     mpoint_start = mpoint2
                     if LOGGING_ON:
-                        logging.info("(%i, %i) Track Reset: Radius %i Exceeds %i",
-                        mpoint2[0], mpoint2[1], track_length, max_radius)
+                        logging.info("  RESET: (%i, %i) %i sqpx Radius %i Exceeds %i",
+                        mpoint2[0], mpoint2[1], motion_size, track_length, max_radius)
                     start_track = True
                     continue
                 if track_length > TRACK_TRIG_LEN:
                     # This was a valid track
                     if LOGGING_ON:
-                        logging.info("(%i, %i) Track End: Length %i GT %i TRACK_TRIG_LEN px",
-                                     mpoint2[0], mpoint2[1], track_length, TRACK_TRIG_LEN)
+                        logging.info("END  : (%i, %i) %i sqpx Len %i GT %i TRACK_TRIG_LEN px",
+                                     mpoint2[0], mpoint2[1], motion_size, track_length, TRACK_TRIG_LEN)
                     filename = get_image_name(IM_DIR, IM_PREFIX)
-                    logging.info("Saving %s", filename)
+                    logging.info("SAVE : %s", filename)
                     # Resize image before saving ..
                     if CIRCLE_ON:  # Put Circle on last motion xy before saving image
                         if TRACK_HIST_ON:
@@ -338,18 +356,13 @@ if __name__ == "__main__":
                     start_track = True
                 else:
                     if LOGGING_ON:
-                        logging.info("(%i, %i)", mpoint2[0], mpoint2[1])
-
-            if not start_track and timer_end(track_timer_start, TRACK_TIMEOUT_SEC):
-                if LOGGING_ON:
-                    logging.info("Track Timeout: GT %i TRACK_TIMEOUT_SEC",
-                                 TRACK_TIMEOUT_SEC)
-                start_track = True
+                        logging.info("  TRACK: (%i, %i) %i sqpx", mpoint2[0], mpoint2[1], motion_size)
 
             if GUI_ON:
                 cv2.imshow("MoTrack (q in Window Quits)", image2)
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     cv2.destroyAllWindows()
+
 
     except KeyboardInterrupt:
         print("")
