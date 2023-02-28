@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.1"
+PROG_VERSION = "1.2"
 
 import logging
 # Setup Logging
@@ -18,7 +18,7 @@ import subprocess
 
 # list of valid camera sources
 CAMLIST = ('usbcam', 'rtspcam', 'pilibcam', 'pilegcam')
-CONFIG_FILENAME = "config.py"  # settings file to import
+CONFIG_FILENAME = "config.py"  # Settings variables file to import
 
 if os.path.exists(CONFIG_FILENAME):
     # Read Configuration variables from config.py file
@@ -37,6 +37,8 @@ PROG_NAME = os.path.basename(__file__)
 
 # ------------------------------------------------------------------------------
 def validate_cam(cam, camlist):
+    ''' Make sure camera value is correct (case insensitive)
+    '''
     camlow = cam.lower()
     if not camlow in camlist:
         logging.error('%s Not a Valid Camera Value', cam)
@@ -141,7 +143,12 @@ def track_motion_distance(xy1, xy2):
     trackLen = int(abs(math.hypot(x2 - x1, y2 - y1)))
     return trackLen
 
+
+# ------------------------------------------------------------------------------
 def is_pi_legacy_cam():
+    '''
+    Determine if pi camera is configured for Legacy = True or Libcam = False.
+    '''
     logging.info("Check for Legacy Pi Camera Module with command - vcgencmd get_camera")
     camResult = subprocess.check_output("vcgencmd get_camera", shell=True)
     camResult = camResult.decode("utf-8")
@@ -155,19 +162,16 @@ def is_pi_legacy_cam():
         logging.error('Check if Legacy pi Camera is Enabled and Camera is working.')
         return False
 
+
 # ------------------------------------------------------------------------------
-if __name__ == "__main__":
-
-    if SHOW_SETTINGS:
-        show_settings(CONFIG_FILENAME)
-
-    if not os.path.exists(IM_DIR):  # Check if image directory exists
-        os.makedirs(IM_DIR)  # Create directory if Not Found
-
-    logging.info("%s ver %s written by Claude Pageau", PROG_NAME, PROG_VERSION)
-    mycam = validate_cam(CAMERA, CAMLIST)
-
+def create_cam_thread(mycam):
+    '''
+    Create the appropriate video stream thread
+    bassed on the specified camera name
+    returns vs video stream and updated camera name with source if applicable
+    '''
     if mycam == 'pilibcam':
+        # check if pi libcam
         if not is_pi_legacy_cam():
             if not os.path.exists('/usr/bin/libcamera-still'):
                 logging.error('libcamera not Installed')
@@ -188,14 +192,14 @@ if __name__ == "__main__":
         else:
             logging.error('Looks like Pi Legacy Camera is Enabled')
             logging.info('Edit config.py and Change CAMERA variable as Required.')
-            logging.info('or Disable Legacy Pi Camera using sudo raspi-config')            
+            logging.info('or Disable Legacy Pi Camera using sudo raspi-config')
             sys.exit(1)
-        
+
     elif mycam == 'pilegcam':
-        # Check if for Pi Legacy pi Camera
-        if not is_pi_legacy_cam(): 
+        # Check if Pi Legacy pi Camera
+        if not is_pi_legacy_cam():
             sys.exit(1)
-    
+
         if not os.path.exists('streampilegacycam.py'):
             logging.error("pilegacycamsteam.py File Not Found.")
             sys.exit(1)
@@ -226,6 +230,21 @@ if __name__ == "__main__":
             logging.error("Import Failed for streamwebcam.py")
             sys.exit(1)
         vs = WebcamStream(src=cam_src, size=IM_SIZE).start()
+    return vs, cam
+
+
+# ------------------------------------------------------------------------------
+if __name__ == "__main__":
+
+    if SHOW_SETTINGS:
+        show_settings(CONFIG_FILENAME)
+
+    if not os.path.exists(IM_DIR):  # Check if image directory exists
+        os.makedirs(IM_DIR)  # Create directory if Not Found
+
+    logging.info("%s ver %s written by Claude Pageau", PROG_NAME, PROG_VERSION)
+    mycam = validate_cam(CAMERA, CAMLIST)
+    vs, cam = create_cam_thread(mycam)
 
     logging.info("Wait ...")
     time.sleep(3)  # Allow Camera to warm up
