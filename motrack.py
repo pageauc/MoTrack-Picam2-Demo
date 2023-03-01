@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.5"
+PROG_VERSION = "1.51"
 
 import logging
 # Setup Logging
@@ -267,7 +267,7 @@ if __name__ == "__main__":
         TRACK_INTERVAL_LEN = int(TRACK_TRIG_LEN / 2.0) # Max allowed px distance from previous track point
         logging.info("Auto Calculated TRACK_TRIG_LEN=%i and TRACK_INTERVAL_LEN=%i",
                       TRACK_TRIG_LEN, TRACK_INTERVAL_LEN)
-    logging.info("Start Stream %s" % cam)
+    logging.info("Start %s Stream Thread" % CAMERA.upper())
     logging.info("Start Motion Tracking Loop. Ctrl-c Quits ...")
     logging.info("--------------------------------------------")
     tracking = True
