@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.4"
+PROG_VERSION = "1.5"
 
 import logging
 # Setup Logging
@@ -289,7 +289,7 @@ if __name__ == "__main__":
             # Check if timer expired and if so restart track and try again
             if not start_track and timer_end(track_timer_start, TRACK_TIMEOUT_SEC):
                 if LOGGING_ON:
-                    logging.info("IIMER: GT %i TRACK_TIMEOUT_SEC",
+                    logging.info("  IIMER: GT %i TRACK_TIMEOUT_SEC",
                                  TRACK_TIMEOUT_SEC)
                 start_track = True
                 continue
@@ -325,7 +325,6 @@ if __name__ == "__main__":
                     if LOGGING_ON:
                         logging.info("  RESET: (%i, %i) %i sqpx Radius %i Exceeds %i",
                         mpoint2[0], mpoint2[1], motion_size, track_length, max_radius)
-                    start_track = True
                     continue
                 if track_length > TRACK_TRIG_LEN:
                     # This was a valid track
@@ -356,7 +355,8 @@ if __name__ == "__main__":
                     start_track = True
                 else:
                     if LOGGING_ON:
-                        logging.info("  TRACK: (%i, %i) %i sqpx", mpoint2[0], mpoint2[1], motion_size)
+                        logging.info("  TRACK: (%i, %i) %i sqpx Len %i px",
+                                      mpoint2[0], mpoint2[1], motion_size, track_length)
 
             if GUI_ON:
                 cv2.imshow("MoTrack (q in Window Quits)", image2)
