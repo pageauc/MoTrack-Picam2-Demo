@@ -4,7 +4,7 @@
 # Logging Settings
 #======================================
 LOGGING_ON = True     # Show individual track xy points
-SHOW_SETTINGS = True   # Display settings on launch
+SHOW_SETTINGS_ON = True   # Display settings on launch
 
 
 #======================================
@@ -14,8 +14,6 @@ CAMERA = "usbcam"    # valid values usbcam, rtspcam, pilibcam, pilegcam
  
 USBCAM_SRC = 0
 RTSPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
-
-# NOTE: To Scan for Pi Lib or legacy CAM Set WEBCAM_ON and IPCAM_ON to False
 
 IM_PREFIX = "track-"   # Prefix for image files
 IM_DIR = "./media/images"  # directory for saving images (auto created)

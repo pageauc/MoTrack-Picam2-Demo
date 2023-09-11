@@ -239,7 +239,7 @@ def create_cam_thread(mycam):
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
 
-    if SHOW_SETTINGS:
+    if SHOW_SETTINGS_ON:
         show_settings(CONFIG_FILENAME)
 
     if not os.path.exists(IM_DIR):  # Check if image directory exists
