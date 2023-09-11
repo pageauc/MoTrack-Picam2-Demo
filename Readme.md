@@ -9,8 +9,8 @@ Images can be viewed on web browser via provided webserver.py run in foreground 
 Program user settings are saved in the config.py file.
 
 ## Install or Upgrade motrack demo
-***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date run
-In SSH or Terminal Session run commands below below
+***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
+In SSH or Terminal Session run commands below.
 
     sudo apt update
     sudo apt upgrade
