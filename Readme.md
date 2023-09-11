@@ -2,11 +2,11 @@
 ### Uses python3 and opencv to Track Largest moving object in camera view.
 
 ## Introduction
-This is just some demo working code to test motion tracking using picamera2 libcam library with legacy code used in some of my
-other projects like speed-camera, pi-timolo, Etc. On completion of a successful track an image is saved in ./media/images
-Optional tracking history can be displayed on images as contour center poiny circles or contour rectangles.
-Images can be displayed on web browser via provided webserver.py run in foreground or background. 
-Program settings are saved in the default config.py file
+This is just some demo working code to test motion tracking using python picamera2 libcam, picamera legacy Camera,  rtsp IP camera or USB Webcam.
+On completion of a successful track an image is saved in ./media/images
+Optional tracking history can be displayed on images as contour center point circles or contour rectangles.
+Images can be viewed on web browser via provided webserver.py run in foreground or background. 
+Program user settings are saved in the config.py file.
 
 ## Install or Upgrade motrack demo
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date run
@@ -43,7 +43,7 @@ To exit nano and save changes press
 
 Access webserver with a web browser at provided URL and port
 
-# For More Info See
+## For More Info See
 
     See https://github.com/pageauc/MoTrack-Picam2-Demo
 
