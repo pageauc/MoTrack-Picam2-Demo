@@ -8,7 +8,7 @@ Optional tracking history can be displayed on images as contour center point cir
 Images can be viewed on web browser via provided webserver.py run in foreground or background. 
 Program user settings are saved in the config.py file.
 
-## Install or Upgrade motrack demo
+## Install or Upgrade
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
 In SSH or Terminal Session run commands below.
 
@@ -31,28 +31,46 @@ To update existing config.py perform commands below
     cp config.py config.py.bak
     cp config.py.new config.py
 
-## Run motrack in putty SSH or Terminal session
+## Edit Settings
+To review and/or change settings execute command below in SSH or terminal session.
+See comments for each variable setting. Ensure camera is installed and working.
 
     cd ~/motrack
-    ./motrack.py
-
-## Edit Settings per comments
-
     nano config.py
 
 To exit nano and save changes press
 
     ctrl-x y
 
-## To run Web Server in background
+## Run motrack
+  Open putty SSH or Terminal session then execute command below.
+
+    cd ~/motrack
+    ./motrack.py
+
+If camera is working motion tracking logging information will be displayed.
+
+## WebServer
+Webserver.py will display saved motrack images from any network device using a web browser.
+
+#### Foreground
+To Run in Foreground open a new SSH or Terminal Session then execute command below.
+
+    ./webserver.py
+
+NOTE browser URL:PORT for accessing MoTrack web page will be displayed.  ctrl-c exits.
+
+#### Background
+To Run in Background execute command below in current SSH or Terminal Session. 
+Then execute motrack.py in same terminal session per above.
 
     ./webserver.sh start
 
-Access webserver with a web browser at provided URL and port
+Access webserver with a web browser at provided URL and port  eg http://192.168.1.128:8080 or http://rpiname.local:8080
 
-## For More Info See
+## More Info See
 
-    See https://github.com/pageauc/MoTrack-Picam2-Demo
+    https://github.com/pageauc/MoTrack-Picam2-Demo
 
 
 Regards Claude....
