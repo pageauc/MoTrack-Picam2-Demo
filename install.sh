@@ -17,7 +17,7 @@ fi
 wget -O streampilegacycam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilegacycam.py
 wget -O streampilibcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilibcam.py
 wget -O streamwebcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streamwebcam.py
-wget -O readme.md -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/readme.md
+wget -O Readme.md -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/Readme.md
 
 chmod +x motrack.py webserver.py webserver.sh
 
