@@ -17,6 +17,7 @@ fi
 wget -O streampilegacycam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilegacycam.py
 wget -O streampilibcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilibcam.py
 wget -O streamwebcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streamwebcam.py
+wget -O readme.md -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/readme.md
 
 chmod +x motrack.py webserver.py webserver.sh
 
@@ -24,7 +25,8 @@ echo "INFO  : Install Dependencies ...."
 sudo apt install -yq python3-opencv
 
 echo "
-
+                    INSTRUCTIONS
+                    ============
 To Run Demo in SSH or Terminal session Default is USB Webcam
 Edit config.py CAMERA setting for RPI Legacy, Libcam or RTSP IP Camera
 
