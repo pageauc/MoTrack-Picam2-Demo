@@ -11,7 +11,7 @@ SHOW_SETTINGS_ON = True   # Display settings on launch
 # Camera and Image Settings
 #======================================
 CAMERA = "usbcam"    # valid values usbcam, rtspcam, pilibcam, pilegcam
- 
+
 USBCAM_SRC = 0
 RTSPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
 
@@ -32,7 +32,7 @@ TRACK_TRIG_LEN = 150    # Number of pixels to end tracking
 TRACK_INTERVAL_LEN = 50 # Max allowed px distance from previous
 TRACK_TIMEOUT_SEC = 2.0 # If no motion for timeout seconds end tracking
 TRACK_DELAY_SEC = 3.0   # seconds to delay after successful track.  Avoids duplicates
-TRACK_HIST_ON = True    # Show track History overlay on last image
+TRACK_HIST_ON = True    # Show track History overlayed on last image
 
 #======================================
 # Color data for OpenCV lines and text
