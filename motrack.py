@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.51"
+PROG_VERSION = "1.52"
+
+'''
+Note to self
+Look at adding image crop area of interest, similar to speed camera.
+This will reduce open cv processing on larger images and eliminate
+non relavent motion outside the area of interest.
+'''
 
 import logging
 # Setup Logging
@@ -139,7 +146,7 @@ def get_motion_track_point(grayimage1, grayimage2):
 # ------------------------------------------------------------------------------
 def track_motion_distance(xy1, xy2):
     '''
-    Return the triangulated distance between two tracking locations
+    Return the triangulated distance between two tracking positions
     '''
     x1, y1 = xy1
     x2, y2 = xy2
@@ -212,9 +219,7 @@ def create_cam_thread(mycam):
             logging.error("Could Not Import streampilegacycam.py")
             sys.exit(1)
         cam = mycam
-        vs = PiLegacyCamStream(size=IM_SIZE,
-                                   hflip=IM_HFLIP,
-                                   vflip=IM_VFLIP).start()
+        vs = PiLegacyCamStream(size=IM_SIZE, hflip=IM_HFLIP, vflip=IM_VFLIP).start()
     elif mycam == 'usbcam' or mycam == 'rtspcam':
         if mycam == 'rtspcam':
             cam_src = RTSPCAM_SRC
@@ -264,11 +269,15 @@ if __name__ == "__main__":
     if TRACK_TRIG_AUTO:
         # Auto calculate variables below
         TRACK_TRIG_LEN = int(im_width / 8)  # auto calc track len.
-        TRACK_INTERVAL_LEN = int(TRACK_TRIG_LEN / 2.0) # Max allowed px distance from previous track point
+        # Max allowed px distance from previous track point
+        TRACK_INTERVAL_LEN = int(TRACK_TRIG_LEN / 2.0)
         logging.info("Auto Calculated TRACK_TRIG_LEN=%i and TRACK_INTERVAL_LEN=%i",
                       TRACK_TRIG_LEN, TRACK_INTERVAL_LEN)
     logging.info("Start %s Stream Thread" % CAMERA.upper())
     logging.info("Start Motion Tracking Loop. Ctrl-c Quits ...")
+    if GUI_ON:
+        logging.info('GUI_ON = True - To Quit OpenCV display windows.')
+        logging.info('Press Q key when cursor is inside OpenCV window')
     logging.info("--------------------------------------------")
     tracking = True
     try:
@@ -277,6 +286,8 @@ if __name__ == "__main__":
             try:
                 grayimage2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
             except:
+                # If there is a problem with image eg cam, network, Etc then try again
+                # logging.warn('Problem with converting image2 to grayscale. Retrying')
                 continue
 
             motion_xy, motion_size = get_motion_track_point(grayimage1, grayimage2)
