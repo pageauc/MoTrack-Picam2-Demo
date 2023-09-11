@@ -16,13 +16,13 @@ In SSH or Terminal Session run commands below.
     sudo apt upgrade
 
 #### Step 1
-Select copy button on right of Github command box Below  
+Select copy icon on right of Github command box below  
 or Alternatively with mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.     
 
-#### Step 2
-On RPI putty SSH or Terminal session right click, select paste then Enter to download and run install.sh script.
-
     curl -L https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/install.sh | bash
+
+#### Step 2
+On RPI putty SSH or Terminal session, right click, select paste then Enter to download and run install.sh script.
 
 ## Run motrack in putty SSH or Terminal session
 
