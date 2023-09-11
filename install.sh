@@ -10,7 +10,7 @@ wget -O motrack.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Pic
 wget -O webserver.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/webserver.py
 wget -O webserver.sh -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/webserver.sh
 if [ -f config.py ]; then     # check if local file exists.
-    wget -O config.py.new -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/config.py.new
+    wget -O config.py.new -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/config.py
 else
     wget -O config.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/config.py
 fi
