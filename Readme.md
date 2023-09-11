@@ -14,8 +14,9 @@ In SSH or Terminal Session run commands below
     sudo apt upgrade
 
 ***Step 1***      
-With mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.
-or alternatively select copy button on right of Github command box 
+With mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.     
+or Alternatively select copy button on right of Github command box      
+
 ***Step 2***      
 On RPI putty SSH or Terminal session right click, select paste then Enter to download and run install script.
 
