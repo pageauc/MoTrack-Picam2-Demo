@@ -24,7 +24,7 @@ On RPI putty SSH or Terminal session right click, select paste then Enter to dow
 
     curl -L https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/install.sh | bash
 
-## Run Dem in putty SSH or Terminal session
+## Run motrack in putty SSH or Terminal session
 
     cd ~/motrack
     ./motrack.py
