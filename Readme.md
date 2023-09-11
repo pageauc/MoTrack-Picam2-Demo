@@ -24,6 +24,13 @@ or Alternatively with mouse left button highlight curl command in code box below
 #### Step 2
 On RPI putty SSH or Terminal session, right click, select paste then Enter to download and run install.sh script.
 
+***NOTE*** If config.py exists it will Not be overwritten. A config.py.new will be created/updated instead.
+To update existing config.py perform commands below
+
+    cd ~/motrack
+    cp config.py config.py.bak
+    cp config.py.new config.py
+
 ## Run motrack in putty SSH or Terminal session
 
     cd ~/motrack
