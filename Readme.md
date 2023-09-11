@@ -6,24 +6,23 @@
 This is just some demo working code to test using picamera2 libcam library with legacy code used in some of my
 other projects like speed-camera, pi-timolo, Etc.
 
-# Install or Upgrate motrack demo
+## Install or Upgrate motrack demo
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date run
-In SSH or Terminal Session run commands below
+In SSH or Terminal Session run commands below below
 
     sudo apt update
     sudo apt upgrade
 
-***Step 1***      
-With mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.     
-or Alternatively select copy button on right of Github command box      
+#### Step 1
+Select copy button on right of Github command box Below  
+or Alternatively with mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.     
 
-***Step 2***      
-On RPI putty SSH or Terminal session right click, select paste then Enter to download and run install script.
+#### Step 2
+On RPI putty SSH or Terminal session right click, select paste then Enter to download and run install.sh script.
 
     curl -L https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/install.sh | bash
 
 ## Run Dem in ssh or Terminal session
-
 
     cd ~/motrack
     ./motrack.py
