@@ -1,6 +1,5 @@
-# MoTrack - Demo code for testing picamera2 libcam with legacy
-### Uses python3 and opencv and Tracks largest moving object in camera view.
-
+# MoTrack 
+### Uses python3 and opencv to Track Largest moving object in camera view.
 
 ## Introduction
 This is just some demo working code to test using picamera2 libcam library with legacy code used in some of my
@@ -22,7 +21,7 @@ On RPI putty SSH or Terminal session right click, select paste then Enter to dow
 
     curl -L https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/install.sh | bash
 
-## Run Dem in ssh or Terminal session
+## Run Dem in putty SSH or Terminal session
 
     cd ~/motrack
     ./motrack.py
