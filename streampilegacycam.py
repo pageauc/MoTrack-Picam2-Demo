@@ -21,8 +21,8 @@ class PiLegacyCamStream:
         try:
             self.camera = PiCamera()
         except:
-            logging.error("PiCamera Already in Use by Another Process")
-            logging.error("Exiting Due to PiCamera Error")
+            print("PiCamera Already in Use by Another Process")
+            print("Exiting Due to PiCamera Error")
             sys.exit(1)
         self.camera.resolution = self.size
         self.camera.rotation = rotation
