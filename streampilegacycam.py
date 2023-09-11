@@ -1,6 +1,7 @@
 # Written by Claude Pageau 18 Nov 2022 based on piimagesearch code
 
 # Import required libraries
+import sys
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from threading import Thread
