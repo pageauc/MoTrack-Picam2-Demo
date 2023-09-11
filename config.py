@@ -19,8 +19,8 @@ IM_PREFIX = "track-"   # Prefix for image files
 IM_DIR = "./media/images"  # directory for saving images (auto created)
 IM_SIZE = (640, 480)   # Image resolution (width, height) pixels
 IM_BIGGER = 1.75       # Resize the stream image before saving
-IM_VFLIP = True        # True enables flipping image vertically
-IM_HFLIP = True        # True enables flipping image horizonally.
+IM_VFLIP = False       # True enables flipping image vertically. (do NOT use with webcam)
+IM_HFLIP = False       # True enables flipping image horizonally. (do NOT use with webcam)
 IM_FRAMERATE = 30      # Legacy Picamera Framerate
 
 #======================================

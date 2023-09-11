@@ -27,25 +27,35 @@ sudo apt install -yq python3-opencv
 echo "
                     INSTRUCTIONS
                     ============
-To Run Demo in SSH or Terminal session Default is USB Webcam
+RUN DEMO
+========
+In SSH or Terminal session Default is USB Webcam
 Edit config.py CAMERA setting for RPI Legacy, Libcam or RTSP IP Camera
 
     cd ~/motrack
     ./motrack.py
 
-To Change Settings
+EDIT SETTINGS
+=============
 
     nano config.py
 
-To exit nano and save settings press
+To exit nano and save settings. In nano press
 
-    ctrl-x y
+    ctrl-x then y
 
-To run Web Server in background
+RUN WEBSERVER
+=============
+
+Run Web in Foreground open a new terminal (Displays browser URL) 
+
+    ./webserver.py
+
+Run in Background in existing terminal
 
     ./webserver.sh start
 
-Access webserver wirh a web browser at peovided URL
+Access webserver wirh a web browser at URL per Foreground command.
 
 Form More Info See https://github.com/pageauc/MoTrack-Picam2-Demo
 
