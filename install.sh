@@ -40,7 +40,7 @@ EDIT SETTINGS
 
     nano config.py
 
-To exit nano and save settings. In nano press
+To exit and save settings. In nano press
 
     ctrl-x then y
 
