@@ -6,7 +6,7 @@
 This is just some demo working code to test using picamera2 libcam library with legacy code used in some of my
 other projects like speed-camera, pi-timolo, Etc.
 
-## Install or Upgrate motrack demo
+## Install or Upgrade motrack demo
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date run
 In SSH or Terminal Session run commands below below
 
