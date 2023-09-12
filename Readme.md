@@ -1,5 +1,5 @@
 # MoTrack 
-### Uses python3 and opencv to Track Largest moving object in camera view.
+#### Uses python3 and opencv to Track Largest moving object in camera view (picamera2 libcam, picamera legacy, RTSP IP cam or USB Webcam).
 
 ## Introduction
 This is just some demo working code to test motion tracking using python picamera2 libcam, picamera legacy Camera,  rtsp IP camera or USB Webcam.
