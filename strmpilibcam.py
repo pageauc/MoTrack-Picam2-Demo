@@ -22,7 +22,7 @@ class CamStream:
         # add code to process stream image arrays.
     '''
 
-    def __init__(self, size=(320, 240), vflip=False, hflip=False):
+    def __init__(self, size=(320, 248), vflip=False, hflip=False):
         self.size = size
         self.vflip = vflip
         self.hflip = hflip
@@ -36,7 +36,7 @@ class CamStream:
                               transform=Transform(vflip=self.vflip,
                                                   hflip=self.hflip)))
         self.picam2.start()
-        time.sleep(2)
+        time.sleep(2) # Allow camera time to warm up
 
         # initialize variables
         self.thread = None  # Initialize Thread variable
@@ -57,11 +57,11 @@ class CamStream:
             # release camera resources and stop the thread
             if self.stopped:
                 return
-            time.sleep(0.01)  # short delay
-            self.frame = self.picam2.capture_array()
+            time.sleep(0.001) # Slow down loop a little
 
     def read(self):
         '''return the frame array data'''
+        self.frame = self.picam2.capture_array("main")
         return self.frame
 
     def stop(self):
