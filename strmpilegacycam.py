@@ -7,7 +7,7 @@ from picamera import PiCamera
 from threading import Thread
 
 # ------------------------------------------------------------------------------
-class PiLegacyCamStream:
+class CamStream:
     def __init__(self,
                  size=(640, 480),
                  framerate=30,

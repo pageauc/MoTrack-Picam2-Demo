@@ -1,27 +1,19 @@
-# -- User Configuration Settings for motrack.py -------
+# -- motrack.py User Configuration Settings -------
 
 #======================================
 # Logging Settings
 #======================================
 LOGGING_ON = True     # Show individual track xy points
-SHOW_SETTINGS_ON = True   # Display settings on launch
-
+SHOW_SETTINGS_ON = False  # Display settings on launch
+SHOW_CAM_SETTINGS_ON = True
 
 #======================================
-# Camera and Image Settings
+# Image Settings
+# Camera Settings See configcam.py
 #======================================
-CAMERA = "usbcam"    # valid values usbcam, rtspcam, pilibcam, pilegcam
-
-USBCAM_SRC = 0
-RTSPCAM_SRC = "rtsp://user:passwd@192.168.1.200:554/12"  # Set per IP Cam Docs and config
-
 IM_PREFIX = "track-"   # Prefix for image files
 IM_DIR = "./media/images"  # directory for saving images (auto created)
-IM_SIZE = (640, 480)   # Image resolution (width, height) pixels
 IM_BIGGER = 1.75       # Resize the stream image before saving
-IM_VFLIP = False       # True enables flipping image vertically. (do NOT use with webcam)
-IM_HFLIP = False       # True enables flipping image horizonally. (do NOT use with webcam)
-IM_FRAMERATE = 30      # Legacy Picamera Framerate
 
 #======================================
 # Motion Tracking Settings
@@ -52,6 +44,7 @@ CIRCLE_SIZE = 5
 LINE_COLOR = RED
 LINE_THICKNESS = 2
 
+TRACK_MIN_AREA = 500    # Minimum area of contours to track
 THRESHOLD_SENSITIVITY = 25 # black pixels below value, white above to enhance contours
 BLUR_SIZE = 10    # Enlarge white area around contour pixels to aid detection
 

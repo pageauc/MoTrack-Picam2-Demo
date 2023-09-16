@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 from __future__ import print_function
-PROG_VERSION = "1.52"
-
 '''
 Note to self
 Look at adding image crop area of interest, similar to speed camera.
 This will reduce open cv processing on larger images and eliminate
 non relavent motion outside the area of interest.
 '''
+
+PROG_VERSION = "1.60"
 
 import logging
 # Setup Logging
@@ -22,11 +22,9 @@ import datetime
 import math
 import cv2
 import subprocess
+from strmcam import strmcam
 
-# list of valid camera sources
-CAMLIST = ('usbcam', 'rtspcam', 'pilibcam', 'pilegcam')
 CONFIG_FILENAME = "config.py"  # Settings variables file to import
-
 if os.path.exists(CONFIG_FILENAME):
     # Read Configuration variables from config.py file
     try:
@@ -42,20 +40,6 @@ else:
 
 PROG_NAME = os.path.basename(__file__)
 
-# ------------------------------------------------------------------------------
-def validate_cam(cam, camlist):
-    ''' Make sure camera value is correct (case insensitive)
-    '''
-    camlow = cam.lower()
-    if not camlow in camlist:
-        logging.error('%s Not a Valid Camera Value', cam)
-        logging.info('Valid Values are %s', ' '.join(camlist))
-        logging.info('Edit config.py CAMERA variable.')
-        sys.exit(1)
-    else:
-        logging.info('Connecting to camera %s', camlow)
-    return camlow
-
 
 # ------------------------------------------------------------------------------
 def show_settings(filename):
@@ -63,10 +47,11 @@ def show_settings(filename):
     Display program configuration variable settings
     read config file and print each decoded line
     '''
+    print("============= %s Settings ===================" % filename)
     with open(filename, 'rb') as f:
         for line in f:
             print(line.decode().strip())
-    print("")
+    print("=====================================================")
 
 
 # ------------------------------------------------------------------------------
@@ -153,113 +138,23 @@ def track_motion_distance(xy1, xy2):
     trackLen = int(abs(math.hypot(x2 - x1, y2 - y1)))
     return trackLen
 
-
-# ------------------------------------------------------------------------------
-def is_pi_legacy_cam():
-    '''
-    Determine if pi camera is configured for Legacy = True or Libcam = False.
-    '''
-    logging.info("Check for Legacy Pi Camera Module with command - vcgencmd get_camera")
-    camResult = subprocess.check_output("vcgencmd get_camera", shell=True)
-    camResult = camResult.decode("utf-8")
-    camResult = camResult.replace("\n", "")
-    params = camResult.split()
-    if params[0].find("=1") >= 1 and params[1].find("=1") >= 1:
-        logging.info("Pi Camera Module Found %s", camResult)
-        return True
-    else:
-        logging.error("Problem Finding Pi Legacy Camera %s", camResult)
-        logging.error('Check if Legacy pi Camera is Enabled and Camera is working.')
-        return False
-
-
-# ------------------------------------------------------------------------------
-def create_cam_thread(mycam):
-    '''
-    Create the appropriate video stream thread
-    bassed on the specified camera name
-    returns vs video stream and updated camera name with source if applicable
-    '''
-    if mycam == 'pilibcam':
-        # check if pi libcam
-        if not is_pi_legacy_cam():
-            if not os.path.exists('/usr/bin/libcamera-still'):
-                logging.error('libcamera not Installed')
-                logging.info('Edit config.py and Change CAMERA variable as Required.')
-                os.exit(1)
-            if not os.path.exists('streampilibcam.py'):
-                logging.error("streampilibcam.py File Not Found.")
-                sys.exit(1)
-            try:
-                from streampilibcam import PiLibCamStream
-            except ImportError:
-                logging.error("Failed Import of streampilibcam.py")
-                sys.exit(1)
-            cam = mycam
-            vs = PiLibCamStream(size=IM_SIZE,
-                                im_vflip=IM_VFLIP,
-                                im_hflip=IM_HFLIP).start()
-        else:
-            logging.error('Looks like Pi Legacy Camera is Enabled')
-            logging.info('Edit config.py and Change CAMERA variable as Required.')
-            logging.info('or Disable Legacy Pi Camera using sudo raspi-config')
-            sys.exit(1)
-
-    elif mycam == 'pilegcam':
-        # Check if Pi Legacy pi Camera
-        if not is_pi_legacy_cam():
-            sys.exit(1)
-
-        if not os.path.exists('streampilegacycam.py'):
-            logging.error("pilegacycamsteam.py File Not Found.")
-            sys.exit(1)
-        try:  # Add this check in case running on non RPI platform using usb camera
-            from streampilegacycam import PiLegacyCamStream
-        except ImportError:
-            logging.error("Could Not Import streampilegacycam.py")
-            sys.exit(1)
-        cam = mycam
-        vs = PiLegacyCamStream(size=IM_SIZE, hflip=IM_HFLIP, vflip=IM_VFLIP).start()
-    elif mycam == 'usbcam' or mycam == 'rtspcam':
-        if mycam == 'rtspcam':
-            cam_src = RTSPCAM_SRC
-            cam = "RTSPCamera " + cam_src
-        elif mycam == 'usbcam':
-            cam_src = USBCAM_SRC
-            cam = "USBCamera " + str(cam_src)
-
-        logging.info("Start Stream Thread: %s", cam)
-        if not os.path.exists('streamwebcam.py'):
-            logging.error("Import Problem. streamwebcam.py File Not Found.")
-            sys.exit(1)
-        try:
-            from streamwebcam import WebcamStream
-        except ImportError:
-            logging.error("Import Failed for streamwebcam.py")
-            sys.exit(1)
-        vs = WebcamStream(src=cam_src, size=IM_SIZE).start()
-    return vs, cam
-
-
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
 
     if SHOW_SETTINGS_ON:
         show_settings(CONFIG_FILENAME)
+    if SHOW_CAM_SETTINGS_ON:
+        show_settings('configcam.py')
 
     if not os.path.exists(IM_DIR):  # Check if image directory exists
         os.makedirs(IM_DIR)  # Create directory if Not Found
 
     logging.info("%s ver %s written by Claude Pageau", PROG_NAME, PROG_VERSION)
-    mycam = validate_cam(CAMERA, CAMLIST)
-    vs, cam = create_cam_thread(mycam)
+    vs = strmcam()  # start video stream thread
 
-    logging.info("Wait ...")
-    time.sleep(3)  # Allow Camera to warm up
-    # initialize first gray image
     start_track = True
     track_hist = []
-    image1 = vs.read()
+    image1 = vs.read()  # get first image frame
     try:
         grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
     except cv2.error:
@@ -273,7 +168,6 @@ if __name__ == "__main__":
         TRACK_INTERVAL_LEN = int(TRACK_TRIG_LEN / 2.0)
         logging.info("Auto Calculated TRACK_TRIG_LEN=%i and TRACK_INTERVAL_LEN=%i",
                       TRACK_TRIG_LEN, TRACK_INTERVAL_LEN)
-    logging.info("Start %s Stream Thread" % CAMERA.upper())
     logging.info("Start Motion Tracking Loop. Ctrl-c Quits ...")
     if GUI_ON:
         logging.info('GUI_ON = True - To Quit OpenCV display windows.')
@@ -379,7 +273,7 @@ if __name__ == "__main__":
         print("")
         logging.info("User Pressed Keyboard ctrl-c")
         logging.info("Exiting %s ver %s", PROG_NAME, PROG_VERSION)
-        logging.info("Stop Stream Thread: %s", cam)
-        logging.info("Wait ...")
         vs.stop()
+        logging.info("Stopped Camera Stream Thread")
+        logging.info("Bye ...")        
         sys.exit(0)

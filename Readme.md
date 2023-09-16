@@ -6,7 +6,19 @@ This is just some demo working code to test motion tracking using python picamer
 On completion of a successful track an image is saved in ./media/images
 Optional tracking history can be displayed on images as contour center point circles or contour rectangles.
 Images can be viewed on web browser via provided webserver.py run in foreground or background. 
-Program user settings are saved in the config.py file.
+Program user settings are saved in the config.py file and configcam.py.
+
+Note.
+This version isolates camera stream thread logic. This allows easy integration into my other projects since only I can remove old camera related code
+and simply add two lines.  PI legacy, Libcam, USB and RTSP IP Cameras can be configured using the CAMERA variable in configcam.py
+
+    from strmcam import strmcam
+    
+    vs = strmcam()  # start video stream thread
+    
+    # example implementation
+    image = vs.read()
+    vs.stop()
 
 ## Install or Upgrade
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
@@ -24,12 +36,14 @@ or Alternatively with mouse left button highlight curl command in code box below
 #### Step 2
 On RPI putty SSH or Terminal session, right click, select paste then Enter to download and run install.sh script.
 
-***NOTE*** If config.py exists it will Not be overwritten. A config.py.new will be created/updated instead.
+***NOTE*** If config.py exists it will Not be overwritten. A config.py.new and/or config.cam.py will be created/updated instead.
 To update existing config.py perform commands below
 
     cd ~/motrack
     cp config.py config.py.bak
     cp config.py.new config.py
+    cp configcam.py configcam.py.bak
+    cp configcam.py.new configcam.py  
 
 ## Edit Settings
 To review and/or change settings execute command below in SSH or terminal session.
@@ -37,6 +51,8 @@ See comments for each variable setting. Ensure camera is installed and working.
 
     cd ~/motrack
     nano config.py
+or    
+    nano configcam.py
 
 To exit nano and save changes press
 

@@ -14,9 +14,16 @@ if [ -f config.py ]; then     # check if local file exists.
 else
     wget -O config.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/config.py
 fi
-wget -O streampilegacycam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilegacycam.py
-wget -O streampilibcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streampilibcam.py
-wget -O streamwebcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/streamwebcam.py
+if [ -f configcam.py ]; then     # check if local file exists.
+    wget -O configcam.py.new -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/configcam.py
+else
+    wget -O configcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/configcam.py
+fi
+
+wget -O strmcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/strmcam.py
+wget -O strmpilegacycam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/strmpilegacycam.py
+wget -O strmusbipcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/strmusbipcam.py
+wget -O strmpilibcam.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/strmpilibcam.py
 wget -O Readme.md -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/Readme.md
 
 chmod +x motrack.py webserver.py webserver.sh

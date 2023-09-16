@@ -5,8 +5,7 @@ from libcamera import Transform
 import time
 from threading import Thread
 
-class PiLibCamStream:
-
+class CamStream:
     '''
     Create a picamera2 libcamera in memory image stream that
     runs in a Thread (Bullseye or later)
@@ -17,21 +16,25 @@ class PiLibCamStream:
     ----------------------------------------------------------
 
     from pilibcamstream import PiLibCamStream
-    vs = PiLibCamStream(size=(640, 480), vflip=True, hflip=False).start()
+    vs = PiLibCamStream(im_size=(640, 480), vflip=True, hflip=False).start()
     while True:
         frame = vs.read()  # frame will be array that opencv can process.
         # add code to process stream image arrays.
     '''
 
-    def __init__(self, size=(320, 240), im_vflip=False, im_hflip=False):
+    def __init__(self, size=(320, 240), vflip=False, hflip=False):
+        self.size = size
+        self.vflip = vflip
+        self.hflip = hflip
+
         # initialize the camera and stream
         self.picam2 = Picamera2()
         self.picam2.set_logging(Picamera2.INFO)
         self.picam2.configure(self.picam2.create_preview_configuration(
                               main={"format": 'XRGB8888',
-                              "size": size},
-                              transform=Transform(vflip=im_vflip,
-                                                  hflip=im_hflip)))
+                              "size": self.size},
+                              transform=Transform(vflip=self.vflip,
+                                                  hflip=self.hflip)))
         self.picam2.start()
         time.sleep(2)
 
@@ -53,9 +56,6 @@ class PiLibCamStream:
             # if the thread indicator variable is set,
             # release camera resources and stop the thread
             if self.stopped:
-                self.picam2.stop()
-                if self.thread is not None:
-                    self.thread.join()
                 return
             time.sleep(0.01)  # short delay
             self.frame = self.picam2.capture_array()
@@ -65,5 +65,7 @@ class PiLibCamStream:
         return self.frame
 
     def stop(self):
-        '''indicate that the thread should be stopped'''
+        '''Stop lib camera and thread'''
+        self.picam2.stop()  # stop picamera2 libcamera
+        time.sleep(2)  # allow camera time to released
         self.stopped = True

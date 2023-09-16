@@ -2,8 +2,9 @@
 # Import required libraries
 from threading import Thread
 import cv2
+import time
 
-class WebcamStream:
+class CamStream:
     def __init__(self,
                  src=0,
                  size=(320, 240),
@@ -43,5 +44,8 @@ class WebcamStream:
         return self.frame
 
     def stop(self):
-        # indicate that the thread should be stopped
+        # release cameera and stop thread
+        self.stream.release()
+        time.sleep(2)  # allow time for cam to shut down
+        # indicates that the thread should be stopped
         self.stopped = True
