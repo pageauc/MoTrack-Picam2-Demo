@@ -8,17 +8,17 @@ Optional tracking history can be displayed on images as contour center point cir
 Images can be viewed on web browser via provided webserver.py run in foreground or background. 
 Program user settings are saved in the config.py file and configcam.py.
 
-Note.
-This version isolates camera stream thread logic. This allows easy integration into my other projects since only I can remove old camera related code
-and simply add two lines.  PI legacy, Libcam, USB and RTSP IP Cameras can be configured using the CAMERA variable in configcam.py
+#### Ver 1.60 Details
+This version isolates camera stream thread logic and allows easy integration into my other projects. I can now simply add two lines per below
+and remove previous camera code.  Still supports PI legacy, Libcam, USB and RTSP IP Cameras. Configured using the CAMERA variable in configcam.py
 
-    from strmcam import strmcam
+    from strmcam import strmcam   # import camera function
     
-    vs = strmcam()  # start video stream thread
+    vs = strmcam()      # start video stream thread
     
     # example implementation
-    image = vs.read()
-    vs.stop()
+    image1 = vs.read()  # read video stream image frame into variable
+    vs.stop()           # Stop Camera Thread
 
 ## Install or Upgrade
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
