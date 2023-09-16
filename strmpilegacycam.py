@@ -2,6 +2,7 @@
 
 # Import required libraries
 import sys
+import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from threading import Thread
@@ -30,14 +31,14 @@ class CamStream:
         self.camera.framerate = framerate
         self.camera.hflip = hflip
         self.camera.vflip = vflip
-        
+
          # set optional camera parameters (refer to PiCamera docs)
         for (arg, value) in kwargs.items():
             setattr(self.camera, arg, value)
-            
+
         self.rawCapture = PiRGBArray(self.camera, size=self.size)
         self.stream = self.camera.capture_continuous(self.rawCapture,
-                                                     format="bgr", 
+                                                     format="bgr",
                                                      use_video_port=True)
 
         """
@@ -57,26 +58,25 @@ class CamStream:
 
     def update(self):
         """keep looping infinitely until the thread is stopped"""
-        for f in self.stream:
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            self.frame = f.array
-            self.rawCapture.truncate(0)
-
-            # if the thread indicator variable is set, stop the thread
-            # and resource camera resources
+        while True:
+            # if the thread indicator variable is set, exit
             if self.stopped:
-                self.stream.close()
-                self.rawCapture.close()
-                self.camera.close()
                 return
+            time.sleep(0.001)
 
     def read(self):
         """return the frame most recently read"""
+        # grab the frame from the stream
+        self.frame = f.array
+        # and clear the stream in
+        # preparation for the next frame
+        self.rawCapture.truncate(0)
         return self.frame
 
     def stop(self):
         """indicate that the thread should be stopped"""
+        self.stream.close()
+        self.rawCapture.close()
+        self.camera.close()
+        time.sleep(2) # allow time for device shutdown
         self.stopped = True
-        if self.thread is not None:
-            self.thread.join()

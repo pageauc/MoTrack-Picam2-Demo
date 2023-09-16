@@ -36,11 +36,11 @@ class CamStream:
             # if the thread indicator variable is set, stop the thread
             if self.stopped:
                 return
-            # otherwise, read the next frame from the stream
-            (self.grabbed, self.frame) = self.stream.read()
+            time.sleep(0.001)
 
     def read(self):
         # return the frame most recently read
+        (self.grabbed, self.frame) = self.stream.read()
         return self.frame
 
     def stop(self):
