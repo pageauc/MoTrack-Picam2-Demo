@@ -7,7 +7,7 @@ This will reduce open cv processing on larger images and eliminate
 non relavent motion outside the area of interest.
 '''
 
-PROG_VERSION = "1.60"
+PROG_VERSION = "1.65"
 
 import logging
 # Setup Logging
@@ -29,11 +29,10 @@ CONFIG_FILENAME = "config.py"  # Settings variables file to import
 if os.path.exists(CONFIG_FILENAME):
     # Read Configuration variables from config.py file
     try:
-        logging.info("Import Settings from %s", CONFIG_FILENAME)
+        logging.info("Import Variable Settings from %s", CONFIG_FILENAME)
         from config import *
     except ImportError:
-        logging.error("Problem Importing configuration variables from %s" %
-                      CONFIG_FILENAME)
+        logging.error("Import Failed, from config import * for %s" % CONFIG_FILENAME)
         sys.exit(1)
 else:
     logging.error("Configuration File Not Found %s" % CONFIG_FILENAME)
