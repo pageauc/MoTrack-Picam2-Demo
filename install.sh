@@ -9,6 +9,7 @@ echo "INFO  : Download Project Files ..."
 wget -O motrack.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/motrack.py
 wget -O webserver.py -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/webserver.py
 wget -O webserver.sh -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/webserver.sh
+
 if [ -f config.py ]; then     # check if local file exists.
     wget -O config.py.new -q --show-progress https://raw.github.com/pageauc/MoTrack-Picam2-Demo/master/config.py
 else
@@ -54,7 +55,7 @@ To exit and save settings. In nano press
 RUN WEBSERVER
 =============
 
-Run Web in Foreground open a new terminal (Displays browser URL) 
+Run Web in Foreground open a new terminal (Displays browser URL)
 
     ./webserver.py
 

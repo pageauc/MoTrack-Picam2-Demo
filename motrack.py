@@ -158,7 +158,7 @@ if __name__ == "__main__":
     try:
         grayimage1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
     except cv2.error:
-        logging.error('Problem Connecting to %s. Review Log Messages and Correct', mycam)
+        logging.error('Problem Connecting to %s. Review Log Messages and Correct', CAMERA.upper())
         sys.exit(1)
     im_height, im_width, _ = image1.shape
     if TRACK_TRIG_AUTO:
@@ -274,6 +274,6 @@ if __name__ == "__main__":
         logging.info("User Pressed Keyboard ctrl-c")
         logging.info("Exiting %s ver %s", PROG_NAME, PROG_VERSION)
         vs.stop()
-        logging.info("Stopped Camera Stream Thread")
+        logging.info("Stopped Camera Stream Thread %s", CAMERA.upper())
         logging.info("Bye ...")        
         sys.exit(0)

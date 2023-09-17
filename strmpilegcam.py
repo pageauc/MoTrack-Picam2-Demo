@@ -10,7 +10,7 @@ from threading import Thread
 # ------------------------------------------------------------------------------
 class CamStream:
     def __init__(self,
-                 size=(640, 480),
+                 size=(320, 257),
                  framerate=30,
                  rotation=0,
                  hflip=False,
@@ -18,7 +18,6 @@ class CamStream:
                  **kwargs
                 ):
         """initialize the camera and stream"""
-
         self.size = size
         try:
             self.camera = PiCamera()
@@ -58,25 +57,25 @@ class CamStream:
 
     def update(self):
         """keep looping infinitely until the thread is stopped"""
-        while True:
-            # if the thread indicator variable is set, exit
+        for f in self.stream:
+            # grab the frame from the stream and clear the stream in
+            # preparation for the next frame
+            self.frame = f.array # grab the frame from the stream
+            # clear the stream in preparation for the next frame
+            self.rawCapture.truncate(0)
             if self.stopped:
+                self.stream.close()
+                self.rawCapture.close()
+                self.camera.close()
+                if self.thread is not None:
+                    self.thread.join()
                 return
-            time.sleep(0.001)
+            time.sleep(0.01)
 
     def read(self):
         """return the frame most recently read"""
-        # grab the frame from the stream
-        self.frame = f.array
-        # and clear the stream in
-        # preparation for the next frame
-        self.rawCapture.truncate(0)
         return self.frame
 
     def stop(self):
         """indicate that the thread should be stopped"""
-        self.stream.close()
-        self.rawCapture.close()
-        self.camera.close()
-        time.sleep(2) # allow time for device shutdown
         self.stopped = True
