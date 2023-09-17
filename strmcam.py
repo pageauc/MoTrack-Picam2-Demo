@@ -78,7 +78,7 @@ def strmcam():
                 try:
                     from strmpilibcam import CamStream
                 except ImportError:
-                    logging.error("import Failed. from strmpilibcam import PiLibCamStream")
+                    logging.error("import Failed. from strmpilibcam import CamStream")
                     sys.exit(1)
                 cam_title = cam_name
                 vs = CamStream(size=IM_SIZE,
@@ -105,7 +105,7 @@ def strmcam():
             try:
                 from strmpilegcam import CamStream
             except ImportError:
-                logging.error("Import Failed. from strmpilegcam import PiLegacyCamStream")
+                logging.error("Import Failed. from strmpilegcam import CamStream")
                 sys.exit(1)
             cam_title = cam_name
 
@@ -129,7 +129,7 @@ def strmcam():
             try:
                 from strmusbipcam import CamStream
             except ImportError:
-                logging.error("Could Not Import Webcam from strmusbipcam.py")
+                logging.error("Import Failed. from strmusbipcam import CamStream")
                 sys.exit(1)
             vs = CamStream(src=cam_src, size=IM_SIZE).start()
 
