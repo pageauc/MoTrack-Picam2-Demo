@@ -23,6 +23,7 @@ import math
 import cv2
 import subprocess
 from strmcam import strmcam
+from configcam import CAMERA
 
 CONFIG_FILENAME = "config.py"  # Settings variables file to import
 if os.path.exists(CONFIG_FILENAME):
