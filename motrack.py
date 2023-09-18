@@ -6,7 +6,6 @@ Look at adding image crop area of interest, similar to speed camera.
 This will reduce open cv processing on larger images and eliminate
 non relavent motion outside the area of interest.
 '''
-
 PROG_VERSION = "1.65"
 
 import logging
@@ -15,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s %(levelname)-8s %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S")
 logging.info("Loading Python Libraries ...")
+
 import os
 import sys
 import time
@@ -275,5 +275,5 @@ if __name__ == "__main__":
         logging.info("Exiting %s ver %s", PROG_NAME, PROG_VERSION)
         vs.stop()
         logging.info("Stopped Camera Stream Thread %s", CAMERA.upper())
-        logging.info("Bye ...")        
+        logging.info("Bye ...")
         sys.exit(0)
