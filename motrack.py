@@ -138,6 +138,7 @@ def track_motion_distance(xy1, xy2):
     trackLen = int(abs(math.hypot(x2 - x1, y2 - y1)))
     return trackLen
 
+
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
 

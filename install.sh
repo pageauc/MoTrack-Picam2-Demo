@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "MoTeack  Install  written by Claude Pageau"
+echo "MoTrack  Install  written by Claude Pageau"
 echo "INFO  : Create motrack Folders ..."
 cd ~
 mkdir -p motrack
